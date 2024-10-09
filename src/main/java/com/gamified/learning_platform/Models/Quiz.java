@@ -3,6 +3,8 @@ package com.gamified.learning_platform.Models;
 import jakarta.persistence.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "quizzes")
 public class Quiz {
@@ -21,9 +23,15 @@ public class Quiz {
 
     // One-to-many relationship with QuizQuestion
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<QuizQuestion> questions;
+    
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<UserQuiz> userQuizzes;
 
-    // Getters and Setters
+
+	// Getters and Setters
     public Long getId() {
         return id;
     }
@@ -71,4 +79,12 @@ public class Quiz {
     public void setQuestions(List<QuizQuestion> questions) {
         this.questions = questions;
     }
+
+    public List<UserQuiz> getUserQuizzes() {
+		return userQuizzes;
+	}
+
+	public void setUserQuizzes(List<UserQuiz> userQuizzes) {
+		this.userQuizzes = userQuizzes;
+	}
 }

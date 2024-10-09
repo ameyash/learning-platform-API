@@ -41,6 +41,7 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) throws Exception {
+		UserDto dtoModel = new UserDto();
 		try {
 			System.out.println(authRequest.getUsername()+" "+authRequest.getPassword());
 			authenticationManager
@@ -50,10 +51,16 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
 		}
 
-		final UserDetails userDetails = findByusername(authRequest.getUsername());
+		final User userDetails = findByusername(authRequest.getUsername());
 		final String jwt = jwtUtil.generateToken(userDetails.getUsername());
-
-		return ResponseEntity.ok(new AuthResponse(jwt));
+		
+		dtoModel.setEmail(userDetails.getUsername());
+		dtoModel.setFirstName(userDetails.getFirstName());
+		dtoModel.setLastName(userDetails.getLastName());
+		dtoModel.setJwt(jwt);
+		dtoModel.setMessage("Login Successful");
+		
+		return new ResponseEntity<>(dtoModel, HttpStatus.OK);
 	}
 
 	@PostMapping("/signup")
@@ -84,9 +91,8 @@ public class AuthController {
 
 	}
 
-	private UserDetails findByusername(String username) throws Exception {
-		final UserDetails userDetails = (UserDetails) userDetailsService.findByUsername(username);
-		System.out.println(userDetails);
+	private User findByusername(String username) throws Exception {
+		final User userDetails = userDetailsService.findByUsername(username);
 		return userDetails;
 	}
 }

@@ -1,15 +1,19 @@
 package com.gamified.learning_platform.Models;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,8 +29,11 @@ public class User implements UserDetails  {
     private String email;
     private String password;
     private String role;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserQuiz> userQuizzes;
     
-    
+    //Getters and setters
+
 	public User() {}
 	
 	public User(Long id, String firstName, String lastName, String email, String password, String role, String username) {
@@ -83,6 +90,14 @@ public class User implements UserDetails  {
 	}
 	public void setRole(String role) {
 		this.role = role;
+	}
+	
+	public List<UserQuiz> getUserQuizzes() {
+		return userQuizzes;
+	}
+
+	public void setUserQuizzes(List<UserQuiz> userQuizzes) {
+		this.userQuizzes = userQuizzes;
 	}
 
 	@Override
